@@ -24,7 +24,8 @@ build:
         go build
         -ldflags="-s -w -X github.com/f1bonacc1/process-compose/src/config.Version=v${{ version }}"
         -v -o $PREFIX/bin/process-compose ./src
-    - if: unix
+      # we can't generate the completion scripts on osx-arm64 due to cross compilation
+    - if: unix and target_platform != "osx-arm64"
       then:
         - mkdir -p $PREFIX/share/bash-completion/completions
         - process-compose completion bash > $PREFIX/share/bash-completion/completions/process-compose
