@@ -1,5 +1,5 @@
 context:
-  version: "1.64.1"
+  version: "1.75.2"
 
 package:
   name: process-compose
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/F1bonacc1/process-compose/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 388bfcec5f20b452d56f943080c75bf6135c5bfef4fef0d251e10fc86054360a
+  sha256: a5861c7361d73e873e78c8471ad886265dfb52d0671917ee70c3af40a2ed0a18
   target_directory: src
 
 build:
