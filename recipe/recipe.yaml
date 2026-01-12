@@ -1,5 +1,5 @@
 context:
-  version: "1.64.1"
+  version: "1.87.0"
 
 package:
   name: process-compose
@@ -7,23 +7,23 @@ package:
 
 source:
   url: https://github.com/F1bonacc1/process-compose/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 388bfcec5f20b452d56f943080c75bf6135c5bfef4fef0d251e10fc86054360a
+  sha256: 83dfe1ec0670e872835314e766f39fd0fa0230c2e64c6dcb6af778f27856e250
   target_directory: src
 
 build:
   number: 0
   script:
     - cd src
-    - go-licenses save ./src --save_path ../library_licenses
+    - go-licenses save ./ --save_path ../library_licenses
     - if: win
       then: >
         go build
         -ldflags="-s -w -X github.com/f1bonacc1/process-compose/src/config.Version=v${{ version }}"
-        -v -o %LIBRARY_BIN%\process-compose.exe ./src
+        -v -o %LIBRARY_BIN%\process-compose.exe ./
       else: >
         go build
         -ldflags="-s -w -X github.com/f1bonacc1/process-compose/src/config.Version=v${{ version }}"
-        -v -o $PREFIX/bin/process-compose ./src
+        -v -o $PREFIX/bin/process-compose ./
       # we can't generate the completion scripts on osx-arm64 due to cross compilation
     - if: unix and target_platform != "osx-arm64"
       then:
@@ -49,7 +49,7 @@ about:
   homepage: https://f1bonacc1.github.io/process-compose/
   license: Apache-2.0
   license_file:
-    - LICENSE
+    - src/LICENSE
     - library_licenses/
   summary: Process Compose is a simple and flexible scheduler and orchestrator to manage non-containerized applications.
   description: |
