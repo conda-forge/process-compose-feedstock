@@ -14,7 +14,12 @@ build:
   number: 0
   script:
     - cd src
-    - go-licenses save ./ --save_path ../library_licenses
+    - go-licenses save ./ --save_path ../library_licenses --ignore github.com/alecthomas/chroma/v2
+    - if: win
+      then: >
+        for /f "delims=" %%i in ('dir /s /b gopath\chroma\COPYING') do mkdir ..\library_licenses\github.com\alecthomas\chroma\v2 & copy "%%i" ..\library_licenses\github.com\alecthomas\chroma\v2\COPYING
+      else: >
+        find $SRC_DIR/gopath -path "*/chroma/*" -name "COPYING" -exec mkdir -p ../library_licenses/github.com/alecthomas/chroma/v2 \; -exec cp {} ../library_licenses/github.com/alecthomas/chroma/v2/COPYING \; -quit
     - if: win
       then: >
         go build
