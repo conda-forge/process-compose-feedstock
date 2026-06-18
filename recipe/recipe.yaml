@@ -1,5 +1,5 @@
 context:
-  version: "1.103.0"
+  version: "1.110.0"
 
 package:
   name: process-compose
@@ -7,14 +7,19 @@ package:
 
 source:
   url: https://github.com/F1bonacc1/process-compose/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: d61f0382d2b4f4f3b05adb5d2a289b068ceb1697f77c76ca0e1e94fe9acc4fac
+  sha256: 70962dce15736e10b2674a3ed3ce9565596239e3299622e33d73d43b23e10930
   target_directory: src
 
 build:
   number: 0
   script:
     - cd src
-    - go-licenses save ./ --save_path ../library_licenses
+    - go-licenses save ./ --save_path ../library_licenses --ignore github.com/alecthomas/chroma/v2
+    - if: win
+      then: >
+        for /f "delims=" %%i in ('dir /s /b gopath\chroma\COPYING') do mkdir ..\library_licenses\github.com\alecthomas\chroma\v2 & copy "%%i" ..\library_licenses\github.com\alecthomas\chroma\v2\COPYING
+      else: >
+        find $SRC_DIR/gopath -path "*/chroma/*" -name "COPYING" -exec mkdir -p ../library_licenses/github.com/alecthomas/chroma/v2 \; -exec cp {} ../library_licenses/github.com/alecthomas/chroma/v2/COPYING \; -quit
     - if: win
       then: >
         go build
