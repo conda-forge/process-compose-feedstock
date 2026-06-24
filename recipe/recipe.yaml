@@ -1,5 +1,5 @@
 context:
-  version: "1.110.0"
+  version: "1.116.0"
 
 package:
   name: process-compose
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/F1bonacc1/process-compose/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 70962dce15736e10b2674a3ed3ce9565596239e3299622e33d73d43b23e10930
+  sha256: 4c0e4989360379a265cf12d06f5681dd9647566a93604201594995ac6472deca
   target_directory: src
 
 build:
@@ -16,20 +16,20 @@ build:
     - cd src
     - go-licenses save ./ --save_path ../library_licenses --ignore github.com/alecthomas/chroma/v2
     - if: win
-      then: >
-        for /f "delims=" %%i in ('dir /s /b gopath\chroma\COPYING') do mkdir ..\library_licenses\github.com\alecthomas\chroma\v2 & copy "%%i" ..\library_licenses\github.com\alecthomas\chroma\v2\COPYING
-      else: >
-        find $SRC_DIR/gopath -path "*/chroma/*" -name "COPYING" -exec mkdir -p ../library_licenses/github.com/alecthomas/chroma/v2 \; -exec cp {} ../library_licenses/github.com/alecthomas/chroma/v2/COPYING \; -quit
-    - if: win
-      then: >
-        go build
-        -ldflags="-s -w -X github.com/f1bonacc1/process-compose/src/config.Version=v${{ version }}"
-        -v -o %LIBRARY_BIN%\process-compose.exe ./
-      else: >
-        go build
-        -ldflags="-s -w -X github.com/f1bonacc1/process-compose/src/config.Version=v${{ version }}"
-        -v -o $PREFIX/bin/process-compose ./
-      # we can't generate the completion scripts on osx-arm64 due to cross compilation
+      then:
+        - >
+          for /f "delims=" %%i in ('dir /s /b gopath\chroma\COPYING') do mkdir ..\library_licenses\github.com\alecthomas\chroma\v2 & copy "%%i" ..\library_licenses\github.com\alecthomas\chroma\v2\COPYING
+        - >
+          go build
+          -ldflags="-s -w -X github.com/f1bonacc1/process-compose/src/config.Version=v${{ version }}"
+          -v -o %LIBRARY_BIN%\process-compose.exe ./
+      else:
+        - >
+          find $SRC_DIR/gopath -path "*/chroma/*" -name "COPYING" -exec mkdir -p ../library_licenses/github.com/alecthomas/chroma/v2 \; -exec cp {} ../library_licenses/github.com/alecthomas/chroma/v2/COPYING \; -quit
+        - >
+          go build
+          -ldflags="-s -w -X github.com/f1bonacc1/process-compose/src/config.Version=v${{ version }}"
+          -v -o $PREFIX/bin/process-compose ./
     - if: unix and target_platform != "osx-arm64"
       then:
         - mkdir -p $PREFIX/share/bash-completion/completions
